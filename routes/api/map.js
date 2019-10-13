@@ -28,10 +28,11 @@ router.post("/test-get-races", (req, res) => {
         htmlArr[1].substring(0, htmlArr[1].trim().length - 1)
       );
 
-      for (var event in jsonRaces) {
+      for (let event in jsonRaces) {
         // if (jsonRaces[event].venue.country === "USA") {
         if (true) {
-          for (var subevent in jsonRaces[event].subevents) {
+          // was filtering by US races, figure I'll just grab it all for now
+          for (let subevent in jsonRaces[event].subevents) {
             let spartanEvent = jsonRaces[event].subevents[subevent];
             let racetype = spartanEvent.category.category_name;
             if (
@@ -41,18 +42,8 @@ router.post("/test-get-races", (req, res) => {
               racetype == "Stadion" ||
               racetype == "Super"
             ) {
-              for (var raceday in spartanEvent.ct_event_id) {
-                let name = jsonRaces[event].event_name;
-                let event_id = spartanEvent.parent_event_id;
+              for (let raceday in spartanEvent.ct_event_id) {
                 let raceday_id = spartanEvent.ct_event_id[raceday].event;
-                let loc_name = spartanEvent.venue.name;
-                let loc_address = spartanEvent.venue.address;
-                let loc_city = spartanEvent.venue.city;
-                let loc_state = spartanEvent.venue.state;
-                let loc_zip = spartanEvent.venue.zip;
-                let loc_country = spartanEvent.venue.country;
-                let date = new Date(spartanEvent.start_date);
-                let day = spartanEvent.ct_event_id[raceday].day;
 
                 Race.findOne({ raceday_id })
                   .then(race => {
@@ -62,18 +53,18 @@ router.post("/test-get-races", (req, res) => {
                       console.log(`${race.name} already exists`);
                     } else {
                       const newRace = new Race({
-                        name,
+                        name: jsonRaces[event].event_name,
                         racetype,
-                        event_id,
+                        event_id: spartanEvent.parent_event_id,
                         raceday_id,
-                        loc_name,
-                        loc_address,
-                        loc_city,
-                        loc_state,
-                        loc_zip,
-                        loc_country,
-                        date,
-                        day,
+                        loc_name: spartanEvent.venue.name,
+                        loc_address: spartanEvent.venue.address,
+                        loc_city: spartanEvent.venue.city,
+                        loc_state: spartanEvent.venue.state,
+                        loc_zip: spartanEvent.venue.zip,
+                        loc_country: spartanEvent.venue.country,
+                        date: new Date(spartanEvent.start_date),
+                        day: spartanEvent.ct_event_id[raceday].day,
                         last_updated: Date.now()
                       });
                       newRace
