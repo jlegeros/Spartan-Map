@@ -81,4 +81,19 @@ router.post("/test-get-races", (req, res) => {
     });
 });
 
+// @route   GET api/races/get-sunday-races
+// @desc    gets all races on Sunday in USA
+// @access  Public
+router.get("/get-sunday-races", (req, res) => {
+  Race.find({ day: "Sunday", loc_country: "USA" })
+    .sort({ date: 1 })
+    .then(races => {
+      let events = [];
+      for (let i in races) {
+        events[i] = `${races[i].date} ${races[i].racetype} ${races[i].day}`;
+      }
+      return res.json(races);
+    });
+});
+
 module.exports = router;

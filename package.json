@@ -10,9 +10,11 @@
   "author": "James LeGeros",
   "license": "MIT",
   "dependencies": {
+    "@google/maps": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "google-maps-react": "^2.0.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.3",
     "passport": "^0.4.0",
