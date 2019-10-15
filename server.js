@@ -6,6 +6,7 @@ const passport = require("passport");
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const map = require("./routes/api/map");
+const races = require("./routes/api/races");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/map", map);
+app.use("/api/races", races);
 
 const port = process.env.PORT || 5000;
 
