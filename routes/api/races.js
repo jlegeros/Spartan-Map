@@ -84,6 +84,21 @@ router.post("/test-get-races", (req, res) => {
     });
 });
 
+// @route   GET api/races/
+// @desc    Gets all races in USA
+// @access  Public
+router.get("/", (req, res) => {
+  const errors = {};
+  Race.find({ loc_country: "USA" }).sort({ date: 1 });
+  then(races => {
+    if (!races) {
+      errors.noraces = "There are no races";
+      return res.status(404).json(errors);
+    }
+    res.json(races);
+  });
+});
+
 // @route   GET api/races/get-sunday-races
 // @desc    gets all races on Sunday in USA
 // @access  Public
