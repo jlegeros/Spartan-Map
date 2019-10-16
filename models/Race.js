@@ -23,6 +23,12 @@ const RaceSchema = new Schema({
   loc_address: {
     type: String
   },
+  loc_latitude: {
+    type: String
+  },
+  loc_longitude: {
+    type: String
+  },
   loc_city: {
     type: String
   },

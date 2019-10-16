@@ -14,6 +14,7 @@ router.post("/test-get-races", (req, res) => {
   // in its html source containing all their races...  so, I fetch the html source
   // cut out the parts that I don't need, then parse the string as a JSON object
   // if the source layout changes, this will need to be updated
+  let msg = "Success";
   fetch("https://www.spartan.com/en/race/find-race")
     .then(res => res.text())
     .then(body => {
@@ -56,6 +57,8 @@ router.post("/test-get-races", (req, res) => {
                         raceday_id,
                         loc_name: spartanEvent.venue.name,
                         loc_address: spartanEvent.venue.address,
+                        loc_latitude: spartanEvent.venue.latitude,
+                        loc_longitude: spartanEvent.venue.longitude,
                         loc_city: spartanEvent.venue.city,
                         loc_state: spartanEvent.venue.state,
                         loc_zip: spartanEvent.venue.zip,
@@ -77,7 +80,7 @@ router.post("/test-get-races", (req, res) => {
         }
       }
 
-      return res.json({ msg: "Success" });
+      return res.json(msg);
     });
 });
 
