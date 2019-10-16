@@ -18,9 +18,8 @@ const ProfileSchema = new Schema({
     type: String
   },
   races: {
-    // TODO: should this be an array of numbers?
-    // Could use race IDs instead...
-    type: [String]
+    type: Schema.Types.ObjectId,
+    ref: "races"
   },
   date: {
     type: Date,
