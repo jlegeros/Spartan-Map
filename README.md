@@ -16,7 +16,8 @@ Body Parser
 Redux
 
 Technology Used (not from tutorial):
-~ Google Maps API (tbd, work in progress)
+Google Maps React for React facing Maps
+@Google/Maps for node.js
 
 - to determine distances, drive times, etc.
   ~ Google oauth with passport?

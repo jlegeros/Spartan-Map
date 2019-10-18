@@ -50,6 +50,7 @@ router.post("/test-get-races", (req, res) => {
                       // TODO: Diff the data, update if necessary
                       console.log(`${race.name} already exists`);
                     } else {
+                      // TODO: Fix date based on day for multi day events...
                       const newRace = new Race({
                         name: jsonRaces[event].event_name,
                         racetype,
@@ -89,14 +90,49 @@ router.post("/test-get-races", (req, res) => {
 // @access  Public
 router.get("/", (req, res) => {
   const errors = {};
-  Race.find({ loc_country: "USA" }).sort({ date: 1 });
-  then(races => {
-    if (!races) {
-      errors.noraces = "There are no races";
-      return res.status(404).json(errors);
-    }
-    res.json(races);
-  });
+  Race.find({ loc_country: "USA" })
+    .sort({ date: 1 })
+    .then(races => {
+      if (!races) {
+        errors.noraces = "There are no races";
+        return res.status(404).json(errors);
+      }
+      res.json(races);
+    })
+    .catch(err => res.status(400).json(err));
+});
+
+// @route   GET api/races/id/:raceday_id
+// @desc    Gets a race by raceday_id
+// @access  Public
+router.get("/id/:raceday_id", (req, res) => {
+  const errors = {};
+  Race.findOne({ raceday_id: req.params.raceday_id })
+    .then(race => {
+      if (!race) {
+        errors.norace = "There is no race with that id";
+        return res.status(404).json(errors);
+      }
+      res.json(race);
+    })
+    .catch(err => res.status(400).json(err));
+});
+
+// @route   GET api/races/event/:event_id
+// @desc    Gets all races occuring at an event by event_id
+// @access  Public
+router.get("/event/:event_id", (req, res) => {
+  const errors = {};
+  Race.find({ event_id: req.params.event_id })
+    .sort({ date: 1 })
+    .then(races => {
+      if (!races) {
+        errors.noraces = "There are no races with that event id";
+        return res.status(404).json(errors);
+      }
+      res.json(races);
+    })
+    .catch(err => res.status(400).json(err));
 });
 
 // @route   GET api/races/get-sunday-races
@@ -111,7 +147,24 @@ router.get("/get-sunday-races", (req, res) => {
         events[i] = `${races[i].date} ${races[i].racetype} ${races[i].day}`;
       }
       return res.json(races);
-    });
+    })
+    .catch(err => res.status(400).json(err));
+});
+
+// @route   GET api/races/get-friday-races
+// @desc    gets all races on Friday in USA
+// @access  Public
+router.get("/get-friday-races", (req, res) => {
+  Race.find({ day: "Friday" })
+    .sort({ date: 1 })
+    .then(races => {
+      let events = [];
+      for (let i in races) {
+        events[i] = `${races[i].date} ${races[i].racetype} ${races[i].day}`;
+      }
+      return res.json(races);
+    })
+    .catch(err => res.status(400).json(err));
 });
 
 module.exports = router;
