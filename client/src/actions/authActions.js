@@ -20,7 +20,7 @@ export const registerUser = (userData, history) => dispatch => {
 // Login - Get User Token
 export const loginUser = userData => dispatch => {
   axios
-    .post("/api/user/login", userData)
+    .post("/api/users/login", userData)
     .then(res => {
       const { token } = res.data;
       localStorage.setItem("jwtToken", token);
@@ -42,4 +42,14 @@ export const setCurrentUser = decoded => {
     type: SET_CURRENT_USER,
     payload: decoded
   };
+};
+
+// Log user out
+export const logoutUser = () => dispatch => {
+  // Remove token
+  localStorage.removeItem("jwtToken");
+  // Remove auth header
+  setAuthToken(false);
+  // Set current user to empty object
+  dispatch(setCurrentUser({}));
 };
