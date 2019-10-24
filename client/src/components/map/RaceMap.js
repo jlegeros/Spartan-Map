@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 import keys from "../../config/keys";
+import { getRaces } from "../../actions/raceActions";
+import axios from "axios";
 
 class RaceMap extends Component {
   constructor(props) {
@@ -12,6 +12,44 @@ class RaceMap extends Component {
       errors: {}
     };
   }
+
+  componentDidMount() {
+    this._getRaces();
+  }
+
+  _getRaces = async () => {
+    const races = await getRaces();
+    this.setState({
+      errors: {},
+      races
+    });
+  };
+
+  renderMarkers = () => {
+    if (this.state.races.length > 0) {
+      return this.state.races.map(race => {
+        return (
+          <Marker
+            title={race.name}
+            name={race.name}
+            position={{ lat: race.loc_latitude, lng: race.loc_longitude }}
+            key={race._id}
+            icon={
+              "https://www.spartan.com/images/logos/red-map-marker-54x67.png"
+            }
+          />
+        );
+      });
+    } else
+      return (
+        <Marker
+          title={"Boston, home of Spartan HQ"}
+          name={"Boston, MA"}
+          position={{ lat: 42.3142643, lng: -71.1107101 }}
+        />
+      );
+  };
+
   render() {
     const mapStyles = {
       display: "inline",
@@ -25,31 +63,18 @@ class RaceMap extends Component {
           <Map
             google={this.props.google}
             containerStyle={mapStyles}
-            zoom={4.5}
+            zoom={4.2}
             initialCenter={{ lat: 37.6, lng: -95.665 }}
+            mapTypeId={"terrain"}
           >
-            <Marker
-              title={"The marker`s title will appear as a tooltip."}
-              name={"SOMA"}
-              position={{ lat: 37.778519, lng: -122.40564 }}
-            />
+            {this.renderMarkers()}
+            {/* <RaceMarkers /> */}
           </Map>
         </div>
       </div>
     );
   }
 }
-/*
-RaceMap.propTypes = {
-  races: PropTypes.array.isRequired,
-  errors: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  races: state.races,
-  errors: state.errors
-});
-*/
 
 export default GoogleApiWrapper({
   apiKey: keys.googleMapsAPIKey
