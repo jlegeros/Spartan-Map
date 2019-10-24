@@ -40,8 +40,8 @@ router.post("/test-get-races", (req, res) => {
           ) {
             // Make an event here
             let event_id = spartanEvent.parent_event_id;
-            Event.findOne({ event_id }).then(event => {
-              if (event) {
+            Event.findOne({ event_id }).then(raceEvent => {
+              if (raceEvent) {
                 // Event is already in the system
                 // TODO: Diff the data, update if necessary
                 console.log(`${event.name} already exists`);
