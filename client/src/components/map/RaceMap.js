@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+import { Map, GoogleApiWrapper, Marker, InfoWindow } from "google-maps-react";
 import keys from "../../config/keys";
-import { getRaces } from "../../actions/raceActions";
+import { getRacesUS } from "../../actions/raceActions";
 import axios from "axios";
+import SpartanIcon from "./red-map-marker.png";
 
 class RaceMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
       races: [],
+      center: { lat: 37.6, lng: -95.665 },
+      activeMarker: {},
+      activeEventName: "",
       errors: {}
     };
   }
@@ -18,12 +22,25 @@ class RaceMap extends Component {
   }
 
   _getRaces = async () => {
-    const races = await getRaces();
+    const races = await getRacesUS();
     this.setState({
       errors: {},
       races
     });
   };
+
+  onClick = (e) => {
+    console.log(e.name);
+    this.setState({
+      center: e.position,
+      activeMarker: e.position,
+      activeEventName: e.name,
+    });
+  }
+
+  onMouseOver = (e) => {
+    console.log(e.name);
+  }
 
   renderMarkers = () => {
     if (this.state.races.length > 0) {
@@ -31,12 +48,12 @@ class RaceMap extends Component {
         return (
           <Marker
             title={race.name}
+            onClick={this.onClick}
+            onMouseOver={this.onMouseOver}
             name={race.name}
-            position={{ lat: race.loc_latitude, lng: race.loc_longitude }}
-            key={race._id}
-            icon={
-              "https://www.spartan.com/images/logos/red-map-marker-54x67.png"
-            }
+            position={{ lat: race.loc_lat, lng: race.loc_long }}
+            key={race.id}
+            icon={SpartanIcon}
           />
         );
       });
@@ -64,11 +81,17 @@ class RaceMap extends Component {
             google={this.props.google}
             containerStyle={mapStyles}
             zoom={4.2}
-            initialCenter={{ lat: 37.6, lng: -95.665 }}
+            initialCenter={this.state.center}
             mapTypeId={"terrain"}
           >
             {this.renderMarkers()}
-            {/* <RaceMarkers /> */}
+            <InfoWindow 
+              position={this.state.activeMarker}
+              visible={true}>
+              <div>
+                {this.state.activeEventName} {this.state.activeEventDate}
+              </div>  
+            </InfoWindow>
           </Map>
         </div>
       </div>

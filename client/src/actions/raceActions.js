@@ -10,3 +10,12 @@ export const getRaces = async () => {
 
   return data;
 };
+
+export const getRacesUS = async () => {
+  let data;
+  data = await axios.get("/api/races/get-race-events").then(res => {
+    data = res.data;
+    return data;
+  });
+  return data;
+};

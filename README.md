@@ -1,10 +1,10 @@
 MERN Stack - Spartan Map Project
 
-This follows along the DevConnect Udemy tutorial, but with changes specific to the website I'm developing.
+Displays Upcoming US Spartan Race events on a map.  (Previously the Spartan Race website didn't have this. recently they added a map search to their race list)
 
-This will serve as a portfolio piece, if not a useful tool to the Spartan Race community. Work-in-progress~!
+Work-in-progress~!
 
-Technologies Used (as per tutorial):
+Technologies Used:
 MongoDB
 Express
 React
@@ -14,13 +14,12 @@ Json Web Token
 bcryptjs
 Body Parser
 Redux
+Google Maps API
 
-Technology Used (not from tutorial):
-Google Maps React for React facing Maps
-@Google/Maps for node.js
+Data obtainied by scraping Spartan Race's website for upcoming races.  Changes to the Spartan website may cause this to break.
 
-- to determine distances, drive times, etc.
-  ~ Google oauth with passport?
+TODO:
+Complete profile creation and edit pages
+Use Location to determine drive times to events
+Style map and Popups
 
-Addiitonally, I'll be building a small scale scrapper that crawls Spartan.com to generate a database of races in the US.
-~\*\* Spartan race scrapper (tbd, work in progress)

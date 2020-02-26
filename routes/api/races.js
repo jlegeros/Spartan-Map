@@ -85,6 +85,85 @@ router.post("/test-get-races", (req, res) => {
     });
 });
 
+// @route   GET api/races/dbless-get-races
+// @desc    Gets the US races from the Spartan website, returns as a json
+// @access  Public
+router.get("/dbless-get-races", (req, res) => {
+  fetch("https://www.spartan.com/en/race/find-race")
+    .then(res => res.text())
+    .then(body => {
+      let htmlArr = body.split(`<script type="text/javascript">`);
+      htmlArr = htmlArr[1].split(`</script>`);
+      htmlArr = htmlArr[0].split(`window.races = `);
+      let jsonRaces = JSON.parse(
+        htmlArr[1].substring(0, htmlArr[1].trim().length - 1));
+      let usaRaces = jsonRaces.filter((event) => {
+        return event.venue.country == 'USA';
+      });
+      let usaRaceList = [];
+      for (let event in usaRaces) {
+        usaRaceList[event] = {
+          event_name: usaRaces[event].event_name,
+          start_date: usaRaces[event].start_date,
+          venue_id: usaRaces[event].subevents[0].venue.id,
+          subevent: []
+        };
+        for (let subevent in usaRaces[event].subevents) {
+          usaRaceList[event].subevent[subevent] = {
+            event_name: usaRaces[event].subevents[subevent].event_name,
+            category: usaRaces[event].subevents[subevent].category.category_name,
+            start_date: usaRaces[event].subevents[subevent].start_date,
+            end_date: usaRaces[event].subevents[subevent].end_date,
+            details: []
+          }
+          for (let detail in usaRaces[event].subevents[subevent].ct_event_id) {
+            usaRaceList[event].subevent[subevent].details[detail] = {
+              day: usaRaces[event].subevents[subevent].ct_event_id[detail].day
+            }
+          }
+        }
+      }
+      res.status(200).json(usaRaceList);
+    })
+    .catch(err => res.status(400).json(err));
+});
+
+// @route   GET api/races/get-race-events
+// @desc    Gets the US races from the Spartan website, returns as a json
+// @access  Public
+router.get("/get-race-events", (req, res) => {
+  fetch("https://www.spartan.com/en/race/find-race")
+    .then(res => res.text())
+    .then(body => {
+      let htmlArr = body.split(`<script type="text/javascript">`);
+      htmlArr = htmlArr[1].split(`</script>`);
+      htmlArr = htmlArr[0].split(`window.races = `);
+      let jsonRaces = JSON.parse(
+        htmlArr[1].substring(0, htmlArr[1].trim().length - 1));
+      let usaRaces = jsonRaces.filter((event) => {
+        return event.venue.country == 'USA';
+      });
+
+      let usaRaceList = [];
+      for (let event in usaRaces) {
+        usaRaceList[event] = {
+          name: usaRaces[event].event_name,
+          id: usaRaces[event].id,
+          start_date: usaRaces[event].start_date,
+          // venue_id: usaRaces[event].subevents[0].venue.id,
+          loc_address: usaRaces[event].subevents[0].venue.address,
+          loc_city: usaRaces[event].subevents[0].venue.city,
+          loc_state: usaRaces[event].subevents[0].venue.state,
+          loc_zip: usaRaces[event].subevents[0].venue.zip,
+          loc_lat: usaRaces[event].subevents[0].venue.latitude,
+          loc_long: usaRaces[event].subevents[0].venue.longitude
+        };
+      }
+      res.status(200).json(usaRaceList);
+    })
+    .catch(err => res.status(400).json(err));
+});
+
 // @route   GET api/races/
 // @desc    Gets all races in USA
 // @access  Public
